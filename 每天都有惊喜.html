@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<!-- saved from url=(0055)http://localhost:63342/%E7%A5%9E%E8%B5%8Bssq/index.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>每天都有惊喜</title>
+
+    <style>
+
+
+        .ssq-bd {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .top {
+            display: flex;
+            flex-direction: row;
+            margin-top: 40px;
+            margin-bottom: 40px;
+            justify-content: center;
+        }
+
+        .button-bd {
+            display: flex;
+            flex-direction: row;
+            margin-left: 100px;
+        }
+
+        .text {
+            height: 400px;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 50px;
+            color: red;
+        }
+
+
+    </style>
+
+
+    <script>
+
+        /**
+         * 产生0 1
+         * @returns {number}
+         */
+        function shenfuRandom() {
+
+            var original = Math.ceil(Math.random() * 2);
+            var res = original - 1;
+            return res;
+        }
+
+
+        /**
+         * 是否全为相同
+         */
+        function checkSameNumber(arr) {
+
+            for (var i = 0; i < arr.length - 1; i++) {
+
+                var pre = arr[i];
+                var next = arr[i + 1];
+
+//                console.log('pre=' + pre, 'next=' + next);
+
+                if (pre != next) {
+                    return false;
+                }
+            }
+
+
+            return true;
+
+        }
+
+        function Winning() {
+
+            var ssq = document.getElementById('ssq');
+            var dlt = document.getElementById('dlt');
+
+//            双色球
+            if (ssq.checked) {
+//                console.log('ssq');
+                winSSQ();
+            }
+//大乐透
+            if (dlt.checked) {
+//                console.log('dlt');
+                winDLT();
+            }
+
+        }
+
+
+        /**
+         * 清空
+         */
+        function clearText() {
+
+//            console.log('clear');
+            var content = document.getElementById('showContent');
+            content.value = '';
+
+        }
+
+        /**
+         * 检查是否为两位数
+         */
+        function doubleNumber(number) {
+
+            if (number < 10) {
+                return '0' + number;
+            }
+
+            return number;
+
+        }
+
+
+        /**
+         *双色球
+         */
+        function winSSQ() {
+
+            var winRed = function () {
+
+                var redArray = new Array();
+
+                for (var red = 1; red <= 33; red++) {
+
+                    var redArr = winSSQNumber();
+
+                    var flag = checkSameNumber(redArr);
+
+                    if (flag) {
+
+                        red = doubleNumber(red);
+
+                        redArray.push(red);
+                    }
+
+
+                }
+
+                return redArray;
+            }
+
+
+            var winBlue = function () {
+                var blueArray = new Array();
+
+                for (var blue = 1; blue <= 16; blue++) {
+
+                    var blueArr = winSSQNumber();
+
+                    var flag = checkSameNumber(blueArr);
+
+                    if (flag) {
+
+                        blue = doubleNumber(blue);
+
+                        blueArray.push(blue);
+                    }
+
+
+                }
+
+                return blueArray;
+            }
+
+
+            var redA = winRed();
+
+            while (redA.length < 6) {
+                redA = winRed();
+            }
+
+            var blueA = winBlue();
+
+            while (blueA.length < 1) {
+                blueA = winBlue();
+            }
+
+
+            var redString = redA.join(' ');
+            var blueString = blueA.join(' ');
+            var money = getNumbersAndMoney(redA, blueA);
+
+            var winString = (redString + '   +' + blueString + '                         ' + money);
+
+            var content = document.getElementById('showContent');
+
+            content.value += winString + '\n';
+
+        }
+
+        /**
+         *大乐透
+         */
+        function winDLT() {
+
+            var winRed = function () {
+
+                var redArray = new Array();
+
+                for (var red = 1; red <= 35; red++) {
+
+                    var redArr = winDLTNumber();
+
+                    var flag = checkSameNumber(redArr);
+
+                    if (flag) {
+
+                        red = doubleNumber(red);
+                        redArray.push(red);
+                    }
+
+
+                }
+
+                return redArray;
+            }
+
+
+            var winBlue = function () {
+                var blueArray = new Array();
+
+                for (var blue = 1; blue <= 12; blue++) {
+
+                    var blueArr = winDLTNumber();
+
+                    var flag = checkSameNumber(blueArr);
+
+                    if (flag) {
+                        blue = doubleNumber(blue);
+
+                        blueArray.push(blue);
+                    }
+
+                }
+
+                return blueArray;
+            }
+
+
+            var redA = winRed();
+
+            while (redA.length < 5) {
+                redA = winRed();
+            }
+
+            var blueA = winBlue();
+
+            while (blueA.length < 2) {
+                blueA = winBlue();
+            }
+
+
+            var redString = redA.join(' ');
+            var blueString = blueA.join(' ');
+            var money = getNumbersAndMoney(redA, blueA);
+
+            var winString = (redString + '   +' + blueString + '                         ' + money);
+
+            var content = document.getElementById('showContent');
+
+            content.value += winString + '\n';
+
+        }
+
+        /**
+         * 抛硬币的方法，选其中一个。
+         * @returns {Array}
+         */
+        function winSSQNumber() {
+
+//    1、       同时抛5个硬币
+//            return sync5Coins();
+
+//    2、        连续抛5个硬币
+           return continue5Coins();
+
+        }
+
+        /**
+         * 连续5个硬币,要修改概率，把5改成5到7之间的数字，8的话浏览器崩溃，不建议修改
+         */
+        function continue5Coins() {
+
+            var arr = new Array();
+
+
+            for (var i = 0; i < 5; i++) {
+                arr[i] = shenfuRandom();
+            }
+
+            return arr;
+
+        }
+
+        /**
+         * 同时5个硬币,要修改概率，把arr[5] = shenfuRandom();前面的//删除，不建议修改
+         */
+        function sync5Coins() {
+
+            var arr = new Array();
+
+            arr[0] = shenfuRandom();
+            arr[1] = shenfuRandom();
+            arr[2] = shenfuRandom();
+            arr[3] = shenfuRandom();
+            arr[4] = shenfuRandom();
+//            arr[5] = shenfuRandom();
+
+            return arr;
+        }
+
+
+        function winDLTNumber() {
+            var arr = winSSQNumber();
+
+            return arr;
+        }
+
+        /**
+         * 计算注数和金额
+         */
+        function getNumbersAndMoney(redArr, blueArr) {
+
+//            console.log('red=' + redArr.length + 'blue=' + blueArr.length);
+
+            var ssq = document.getElementById('ssq');
+            var dlt = document.getElementById('dlt');
+
+//            双色球
+            if (ssq.checked) {
+
+                var redNum = combination(redArr.length, 6);
+                var blueNum = blueArr.length;
+
+                var res = redNum * blueNum;
+
+                return '双色球' + res + '注,' + '金额:' + res * 2 + '元';
+
+            } else {
+
+                var redNum = combination(redArr.length, 5);
+                var blueNum = combination(blueArr.length, 2);
+
+                var res = redNum * blueNum;
+
+                return '大乐透' + res + '注,' + '金额:' + res * 2 + '元';
+
+            }
+
+
+        }
+
+        /**
+         * 组合算法 例如 C(7,4)=(7*6*5*4*3*2*1)/((4*3*2*1)(3*2*1))
+
+         */
+        function combination(mom, son) {
+
+            var momNumber = 1;
+            var sonNumber = 1;
+            var subSonNumber = 1;
+
+
+            for (var i = 1; i <= mom; i++) {
+                momNumber *= i;
+            }
+
+            for (var i = 1; i <= son; i++) {
+                sonNumber *= i;
+            }
+
+            for (var i = 1; i <= mom - son; i++) {
+                subSonNumber *= i;
+            }
+
+
+            return momNumber / (sonNumber * subSonNumber);
+
+        }
+
+
+    </script>
+
+</head>
+<body>
+
+<div class="ssq-bd">
+
+    <div class="title">神赋</div>
+
+    <div class="top">
+
+
+        <form class="lottery">
+            <input type="radio" name="sex" value="ssq" checked="" id="ssq">双色球
+            <br><br>
+            <input type="radio" name="sex" value="dlt" id="dlt">大乐透
+        </form>
+
+
+        <div class="button-bd">
+            <button type="button" onclick="Winning()">行动</button>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <button type="button" onclick="clearText()">清空</button>
+        </div>
+
+
+    </div>
+
+
+    <textarea class="text" id="showContent">
+    </textarea>
+
+</div>
+
+
+
+</body></html>
